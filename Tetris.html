@@ -1,0 +1,33 @@
+<canvas id='canvas_id' height="500" width="500"></canvas>
+<script>
+    var canvas = document.getElementById('canvas_id')
+    var ctx = canvas.getContext('2d')
+    const side = 20, rows = 10, colums = 20
+    var field=[[]]
+
+    function SetField(value){
+        for(var row_index = 0; row_index < rows; row_index++){
+            field[row_index] = new Array();
+            for(var col_index = 0; col_index < colums; col_index++)
+                field[row_index][col_index] = value
+        }
+    }
+
+    function Draw(){
+        ctx.fillStyle = "#000000"
+        for(var row_index = 0; row_index < rows; row_index++)
+            for(var col_index = 0; col_index < colums; col_index++)
+                if(field[row_index][col_index])
+                    ctx.fillRect(row_index*side, col_index*side, side, side)
+    }
+
+    SetField(false)
+    var tmp = 0
+    while(tmp < rows){
+        setInterval(function(){
+            field[tmp][0] = true
+            Draw();
+        },1000)
+        tmp++
+    }
+</script>
