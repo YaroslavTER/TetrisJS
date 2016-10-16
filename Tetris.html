@@ -30,15 +30,49 @@
               }
     }
 
+    function MoveRight(){
+      for(var row_index = rows - 1; row_index >= 0; row_index--)
+          for(var col_index = colums - 1; col_index >= 0; col_index--)
+              if(field[row_index][col_index] && (row_index+1 < rows && !field[row_index+1][col_index])){
+                field[row_index+1][col_index]=true;
+                field[row_index][col_index]=false;
+              }
+    }
+
+    function MoveLeft(){
+      for(var row_index = 0; row_index < rows; row_index++)
+          for(var col_index = 0; col_index < colums; col_index++)
+              if(field[row_index][col_index] && (row_index-1 >= 0 && !field[row_index-1][col_index])){
+                field[row_index-1][col_index]=true;
+                field[row_index][col_index]=false;
+              }
+    }
+
     SetField(false)
-    field[0][1]=true
-    field[1][1]=true
-    field[0][2]=true
-    field[0][3]=true
+    field[5][1]=true
+    field[6][1]=true
+    field[5][2]=true
+    field[5][3]=true
     Draw()
+    document.addEventListener("keydown", function(event) {
+        console.log(event.which);
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if(event.which == 39){
+            MoveRight()
+            ctx.clearRect(0,0,rows*side,colums*side)
+            Draw()
+        }
+        if(event.which == 37){
+            MoveLeft()
+            ctx.clearRect(0,0,rows*side,colums*side)
+            Draw()
+        }
+    });
+
     setInterval(function(){
         MoveDown()
         ctx.clearRect(0,0,rows*side,colums*side)
         Draw()
-    },1000)
+    },500)
+
 </script>
