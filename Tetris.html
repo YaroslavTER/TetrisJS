@@ -24,23 +24,21 @@
     function MoveDown(){
       for(var row_index = rows - 1; row_index >= 0; row_index--)
           for(var col_index = colums - 1; col_index >= 0; col_index--)
-              if(field[row_index][col_index] && (col_index+1 < rows || !field[row_index][col_index])){
+              if(field[row_index][col_index] && (col_index+1 < colums && !field[row_index][col_index+1])){
                   field[row_index][col_index+1]=true;
                   field[row_index][col_index]=false;
               }
     }
 
     SetField(false)
-    field[0][0]=true
+    field[0][1]=true
+    field[1][1]=true
+    field[0][2]=true
+    field[0][3]=true
     Draw()
-    MoveDown()
-    ctx.clearRect(0,0,rows*side,colums*side)
-    Draw()
-    /*var tmp = 0
     setInterval(function(){
-      if(tmp<rows){
-            field[tmp][0] = true
-            tmp++
-        }
-    },1000)*/
+        MoveDown()
+        ctx.clearRect(0,0,rows*side,colums*side)
+        Draw()
+    },1000)
 </script>
