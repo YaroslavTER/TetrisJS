@@ -22,10 +22,10 @@
     }
 
     function MoveDown(){
-      for(var row_index = rows - 1; row_index > 0; row_index--)
-          for(var col_index = colums - 1; col_index > 0; col_index--)
-              if(field[row_index][col_index] && (row_index+1 < rows || !field[row_index][col_index])){
-                  field[row_index+1][col_index]=true;
+      for(var row_index = rows - 1; row_index >= 0; row_index--)
+          for(var col_index = colums - 1; col_index >= 0; col_index--)
+              if(field[row_index][col_index] && (col_index+1 < rows || !field[row_index][col_index])){
+                  field[row_index][col_index+1]=true;
                   field[row_index][col_index]=false;
               }
     }
