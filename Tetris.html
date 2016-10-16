@@ -21,13 +21,26 @@
                     ctx.fillRect(row_index*side, col_index*side, side, side)
     }
 
-    SetField(false)
-    var tmp = 0
-    while(tmp < rows){
-        setInterval(function(){
-            field[tmp][0] = true
-            Draw();
-        },1000)
-        tmp++
+    function MoveDown(){
+      for(var row_index = rows - 1; row_index > 0; row_index--)
+          for(var col_index = colums - 1; col_index > 0; col_index--)
+              if(field[row_index][col_index] && (row_index+1 < rows || !field[row_index][col_index])){
+                  field[row_index+1][col_index]=true;
+                  field[row_index][col_index]=false;
+              }
     }
+
+    SetField(false)
+    field[0][0]=true
+    Draw()
+    MoveDown()
+    ctx.clearRect(0,0,rows*side,colums*side)
+    Draw()
+    /*var tmp = 0
+    setInterval(function(){
+      if(tmp<rows){
+            field[tmp][0] = true
+            tmp++
+        }
+    },1000)*/
 </script>
