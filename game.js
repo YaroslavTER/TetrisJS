@@ -14,15 +14,15 @@ var figureTemplates = [
 function AddFigure(){
     var f = { x: 0, y: 0}
     f.blocks = figureTemplates[getRandInt(0,3)]
-    current_color = colors[getRandInt(0, colors.length-1)]
+    f.color = colors[getRandInt(0,colors.length)]
     figures.push(f)
 }
 
 function DrawField(){
     ctx.clearRect(0,0,(rows+1)*side,(colums+1)*side)
-    ctx.fillStyle = current_color
     for(var i = 0; i < figures.length; i++ ){
         var f = figures[i]
+        ctx.fillStyle = f.color
         for(var j = 0; j < f.blocks.length; j++){
             ctx.fillRect((f.blocks[j][0]+f.x)*side, (f.blocks[j][1]+f.y)*side, side, side)
         }
