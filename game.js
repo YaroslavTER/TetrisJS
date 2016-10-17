@@ -16,25 +16,10 @@ function DrawField(){
         }
     }
 }
-
-<<<<<<< HEAD
-function MoveDown(){
-    for(var row_index = rows - 1; row_index >= 0; row_index--){
-        for(var col_index = colums - 1; col_index >= 0; col_index--){
-            if(field[row_index][col_index] && (col_index == colums-1 || field[row_index][col_index+1])){
-                /*col_index = colums-1
-                row_index = rows-1*/
-            } else if(field[row_index][col_index] && (col_index+1 < colums && !field[row_index][col_index+1])){
-                field[row_index][col_index+1]=true
-                field[row_index][col_index]=false
-            }
-        }
-=======
 function MoveLeft(){
     var f = figures[figures.length-1]
     if( f.x-1 >= 0 ){
         f.x--
->>>>>>> 15a9c5e8172b792a861cd360508dc939f7a8916c
     }
 }
 
