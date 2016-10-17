@@ -2,7 +2,6 @@ var canvas = document.getElementById('canvas_id')
 var ctx = canvas.getContext('2d')
 var side = 20, rows = 10, colums = 20, time = 500, falltime = time
 var figures = [], colors = ['#07977B', '#424C4A','#7E1B28','#207E1B']
-var current_color = ''
 
 var figureTemplates = [
     [[0,0],[0,1],[0,2],[1,0]],
@@ -13,14 +12,19 @@ var figureTemplates = [
 
 function AddFigure(){
     var f = { x: 0, y: 0}
-    var new_color = colors[getRandInt(0,colors.length)]
-    while(new_color == current_color){
-        new_color = colors[getRandInt(0,colors.length)]
-    }
-    f.color = new_color
-    current_color = new_color
+    f.color=''
+    f = SetColor(f)
     f.blocks = figureTemplates[getRandInt(0,3)]
     figures.push(f)
+}
+
+function SetColor(input_figure){
+    var new_color = colors[getRandInt(0,colors.length)]
+    while(figures.length != 0 && new_color.localeCompare(figures[figures.length-1].color) == 0){
+        new_color = colors[getRandInt(0,colors.length)]
+    }
+    input_figure.color = new_color
+    return input_figure
 }
 
 function DrawField(){
