@@ -1,6 +1,6 @@
 var canvas = document.getElementById('canvas_id')
 var ctx = canvas.getContext('2d')
-var side = 20, rows = 10, colums = 20
+var side = 20, rows = 10, colums = 20, time = 500, falltime = time
 var figures = []
 
 var figureTemplates = [
@@ -55,6 +55,10 @@ function MoveDown(){
     // то эту фигуру замораживаем и создаем новую
 }
 
+function Rotate(){
+
+}
+
 // Main
 AddFigure()
 DrawField()
@@ -62,7 +66,7 @@ DrawField()
 setInterval(function(){
     MoveDown()
     DrawField()
-},500)
+},falltime)
 
 // Listeners
 document.addEventListener('keydown', function(event) {
@@ -73,8 +77,10 @@ document.addEventListener('keydown', function(event) {
     if(event.which == 37){
         MoveLeft()
     }
-    if(event.which == 40){
-        MoveDown()
+    MoveDown()
+
+    if(event.wich == 40){
+        falltime /= 2
     }
     DrawField()
 })
