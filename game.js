@@ -5,16 +5,16 @@ var figures = [], colors = ['#07977B', '#424C4A','#7E1B28','#207E1B']
 
 var figureTemplates = [
     [[0,0],[0,1],[0,2],[1,0]],
-    [[0,0],[0,1],[1,1],[2,1]],
     [[0,0],[0,1],[0,2],[0,3]],
-    [[0,0],[0,1],[0,2],[1,1]]
+    [[0,0],[0,1],[0,2],[1,1]],
+    [[0,0],[0,1],[1,0],[1,1]]
 ]
 
 function AddFigure(){
     var f = { x: 0, y: 0}
     f.color=''
     f = SetColor(f)
-    f.blocks = figureTemplates[getRandInt(0,3)]
+    f.blocks = figureTemplates[getRandInt(0,figureTemplates.length-1)]
     figures.push(f)
 }
 
