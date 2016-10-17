@@ -73,13 +73,10 @@ document.addEventListener('keydown', function(event) {
     var keycode = (event.keyCode ? event.keyCode : event.which)
     if(event.which == 39){
         MoveRight()
-    }
-    if(event.which == 37){
+    } else if(event.which == 37){
         MoveLeft()
-    }
-    MoveDown()
-
-    if(event.wich == 40){
+    } else MoveDown()
+    if(event.which == 40 ){
         falltime /= 2
     }
     DrawField()
