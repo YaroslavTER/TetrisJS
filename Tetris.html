@@ -4,18 +4,20 @@
     var ctx = canvas.getContext('2d')
     const side = 20, rows = 10, colums = 20
     var field=[[]]
-    var figure = { blocks:[[0,0],[0,1],[0,2],[1,1]], x: 0, y: 0}
+    var figure = [[]]
 
-    function SetField(value){
+    function SetMatrix(matrix, value){
         for(var row_index = 0; row_index < rows; row_index++){
-            field[row_index] = new Array();
+            matrix[row_index] = new Array();
             for(var col_index = 0; col_index < colums; col_index++)
-                field[row_index][col_index] = value
+                matrix[row_index][col_index] = value
         }
     }
 
     function AddFigureToField(){
-
+      for(var row_index = 0; row_index < rows; row_index++)
+          for(var col_index = 0; col_index < colums; col_index++)
+              field[row_index][col_index] = figure[row_index][col_index]
     }
 
     function Draw(){
@@ -64,11 +66,12 @@
               }
     }
 
-    SetField(false)
-    field[5][1]=true
-    field[6][1]=true
-    field[5][2]=true
-    field[5][3]=true
+    SetMatrix(field,false)
+    SetMatrix(figure, false)//when figure is stop, then AddFigureToField and generate new figure
+    figure[5][1]=true
+    figure[6][1]=true
+    figure[5][2]=true
+    figure[5][3]=true
     Draw()
     document.addEventListener("keydown", function(event) {
         console.log(event.which);
