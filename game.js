@@ -31,23 +31,33 @@ function GetFigureDim(){
     return {width: width, height: height}
 }
 
+function CheckSides(f, value){
+    for(var i = 0; i < f.blocks.length; i++){
+        for(var k = 0; k < figures.length - 1; k++){
+            var otherf = figures[k]
+            for(var l = 0; l < otherf.blocks.length; l ++){
+                if(f.blocks[i][0]+f.x+value == otherf.blocks[l][0]+otherf.x &&
+                   f.blocks[i][1]+f.y == otherf.blocks[l][1]+otherf.y){
+                    return false
+                }
+            }
+        }
+    }
+    return true
+}
+
 function TestForCollision(direction){
     var f = figures[figures.length-1]
     var dim = GetFigureDim()
     if(direction == 'left' && f.x-1 >= 0){
-        // TODO проверить есть ли слева фигуры
-        return true
+        return CheckSides(f, -1)
     }else if(direction == 'right' && f.x+1 < rows-dim.width){
-        // TODO проверить есть ли справа фигуры
-        // так же само как снизу только + 1 или - 1 на иксах
-        return true
+        return CheckSides(f, 1)
     }else if (direction == 'down' && f.y + dim.height +1 < colums){
-        // сравниваем каждый блок текущей фигуры с каждым блоком каждой фигуры
         for(var i = 0; i < f.blocks.length; i++){
             for(var k = 0; k < figures.length - 1; k++){
                 var otherf = figures[k]
                 for(var l = 0; l < otherf.blocks.length; l ++){
-                    //                   +1 потому что просчитываем следующий ход вниз
                     if(f.blocks[i][1]+f.y+1 == otherf.blocks[l][1]+otherf.y &&
                        f.blocks[i][0]+f.x == otherf.blocks[l][0]+otherf.x){
                         return false
@@ -80,13 +90,13 @@ function DrawField(){
 }
 function MoveLeft(){
     var f = figures[figures.length-1]
-    if(TestForCollision('left'))    
+    if(TestForCollision('left'))
         f.x--
 }
 
 function MoveRight(){
     var f = figures[figures.length-1]
-    if(TestForCollision('right'))    
+    if(TestForCollision('right'))
         f.x++
 }
 
@@ -131,6 +141,7 @@ function getRandInt(min,max){
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
 /*
+СЛАВА УКРАЇНІ
 8888888888888888888888888888888888888888
 88____________________________________88
 88_________________88_________________88
