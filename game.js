@@ -18,6 +18,20 @@ function AddFigure(){
     figures.push(f)
 }
 
+function GetFigureDim(){
+    var f = figures[figures.length-1]
+    var height = 0, width = 0
+    for(var i = 0; i < f.blocks.length; i++){
+        if(f.blocks[i][0] > height){
+            height = f.blocks[i][0]
+        }
+        if(f.blocks[i][1] > width){
+            width = f.blocks[i][1]
+        }
+    }
+    return {width: height, height: width}
+}
+
 function SetColor(input_figure){
     var new_color = colors[getRandInt(0,colors.length)]
     while(figures.length != 0 && new_color.localeCompare(figures[figures.length-1].color) == 0){
@@ -46,8 +60,8 @@ function MoveLeft(){
 
 function MoveRight(){
     var f = figures[figures.length-1]
-    // а тут ширину
-    if( f.x+1 < rows-1 ){
+    var dim = GetFigureDim()
+    if( f.x+1 < rows-dim.width ){
         f.x++
     }
 }
