@@ -1,6 +1,6 @@
 var canvas = document.getElementById('canvas_id')
 var ctx = canvas.getContext('2d')
-var side = 20, rows = 10, colums = 20, time = 500, falltime = time
+var side = 20, rows = 10, colums = 20, falltime = 500
 var figures = [], colors = ['#07977B', '#424C4A','#7E1B28','#207E1B']
 
 var figureTemplates = [
