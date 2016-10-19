@@ -15,8 +15,9 @@ function AddFigure(){
     var f = { x: 0, y: 0}
     f.color = GetRandomColor()
     f.blocks = figureTemplates[getRandInt(0,figureTemplates.length-1)]
+    f.x += rows/2
+    f.y -= GetFigureDim(f).height+1
     figures.push(f)
-
 }
 
 function GetFigureDim(figure){//немного изменил
