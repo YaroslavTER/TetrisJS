@@ -1,7 +1,7 @@
 var canvas = document.getElementById('canvas_id')
 var ctx = canvas.getContext('2d')
 var side = 20, rows = 10, colums = 20, falltime = 500
-var figures = [], colors = ['#07977B', '#424C4A','#7E1B28','#207E1B']
+var figures = [], colors = ['#ff420e', '#6897bb', '#ff7373', '#008080', '#567e35']
 
 var figureTemplates = [
     [[0,0],[0,1],[0,2],[1,0]],
@@ -16,17 +16,17 @@ function AddFigure(){
     f.color = GetRandomColor()
     f.blocks = figureTemplates[getRandInt(0,figureTemplates.length-1)]
     figures.push(f)
+
 }
 
-function GetFigureDim(){
-    var f = figures[figures.length-1]
+function GetFigureDim(figure){//немного изменил
     var height = 0, width = 0
-    for(var i = 0; i < f.blocks.length; i++){
-        if(f.blocks[i][0] > width){
-            width = f.blocks[i][0]
+    for(var i = 0; i < figure.blocks.length; i++){
+        if(figure.blocks[i][0] > width){
+            width = figure.blocks[i][0]
         }
-        if(f.blocks[i][1] > height){
-            height = f.blocks[i][1]
+        if(figure.blocks[i][1] > height){
+            height = figure.blocks[i][1]
         }
     }
     return {width: width, height: height}
@@ -47,9 +47,9 @@ function CheckSides(f, value){
     return true
 }
 
-function TestForCollision(direction){
-    var f = figures[figures.length-1]
-    var dim = GetFigureDim()
+function TestForCollision(f,direction){
+    //var f = figures[figures.length-1]
+    var dim = GetFigureDim(f)
     if(direction == 'left' && f.x-1 >= 0){
         return CheckSides(f, -1)
     }else if(direction == 'right' && f.x+1 < rows-dim.width){
@@ -89,21 +89,18 @@ function DrawField(){
         }
     }
 }
-function MoveLeft(){
-    var f = figures[figures.length-1]
-    if(TestForCollision('left'))
+function MoveLeft(f){
+    if(TestForCollision(f,'left'))
         f.x--
 }
 
-function MoveRight(){
-    var f = figures[figures.length-1]
-    if(TestForCollision('right'))
+function MoveRight(f){
+    if(TestForCollision(f,'right'))
         f.x++
 }
 
-function MoveDown(){
-    var f = figures[figures.length-1]
-    if(TestForCollision('down')){
+function MoveDown(f){
+    if(TestForCollision(f,'down')){
         f.y++
     }else {
         AddFigure()
@@ -126,11 +123,12 @@ setInterval(function(){
 // Listeners
 document.addEventListener('keydown', function(event) {
     var keycode = (event.keyCode ? event.keyCode : event.which)
+    var f = figures[figures.length-1]//оч много раз вызывается ета строчка, немного изменил методы
     if(event.which == 39){
-        MoveRight()
+        MoveRight(f)
     } else if(event.which == 37){
-        MoveLeft()
-    } else MoveDown()
+        MoveLeft(f)
+    } else MoveDown(f)
     if(event.which == 40 ){
         falltime /= 2
     }
