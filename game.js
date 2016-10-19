@@ -89,17 +89,20 @@ function DrawField(){
         }
     }
 }
-function MoveLeft(f){
+function MoveLeft(){
+    var f = figures[figures.length-1]
     if(TestForCollision(f,'left'))
         f.x--
 }
 
-function MoveRight(f){
+function MoveRight(){
+    var f = figures[figures.length-1]
     if(TestForCollision(f,'right'))
         f.x++
 }
 
-function MoveDown(f){
+function MoveDown(){
+    var f = figures[figures.length-1]
     if(TestForCollision(f,'down')){
         f.y++
     }else {
@@ -123,12 +126,11 @@ setInterval(function(){
 // Listeners
 document.addEventListener('keydown', function(event) {
     var keycode = (event.keyCode ? event.keyCode : event.which)
-    var f = figures[figures.length-1]//оч много раз вызывается ета строчка, немного изменил методы
     if(event.which == 39){
-        MoveRight(f)
+        MoveRight()
     } else if(event.which == 37){
-        MoveLeft(f)
-    } else MoveDown(f)
+        MoveLeft()
+    } else MoveDown()
     if(event.which == 40 ){
         falltime /= 2
     }
