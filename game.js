@@ -3,18 +3,26 @@ var ctx = canvas.getContext('2d')
 var side = 20, rows = 10, colums = 20, falltime = 500
 var figures = [], colors = ['#ff420e', '#6897bb', '#ff7373', '#008080', '#567e35']
 
-var figureTemplates = [
-    [[0,0],[0,1],[0,2],[1,0]],
-    [[0,0],[1,0],[1,1],[1,2]],
-    [[0,0],[0,1],[0,2],[0,3]],
-    [[0,0],[0,1],[0,2],[1,1]],
-    [[0,0],[0,1],[1,0],[1,1]]
+var blocksTemplates = [
+    [
+            [[0,0],[0,1],[0,2],[1,0]],
+            [[-1,1],[0,1],[1,1],[1,2]],
+            [[1,1],[1,0],[1,-1],[0,1]],
+            [[0,0],[0,1],[1,1],[2,1]]
+    ],
+    //[[0,0],[1,0],[1,1],[1,2]],
+    //[[0,0],[0,1],[0,2],[0,3]],
+    //[[0,0],[0,1],[0,2],[1,1]],
+    //[[0,0],[0,1],[1,0],[1,1]]
 ]
 
 function AddFigure(){
-    var f = { x: 0, y: 0}
+    var f = { x: 0, y: 0, rotateIndex: 0}
     f.color = GetRandomColor()
-    f.blocks = figureTemplates[getRandInt(0,figureTemplates.length-1)]
+
+    //f.blocks = blocksTemplates[getRandInt(0,blocksTemplates.length-1)]
+    f.blocksTemplates = blocksTemplates[0]
+    f.blocks = f.blocksTemplates[0]
     f.x += rows/2
     f.y -= GetFigureDim(f).height+1
     figures.push(f)
@@ -111,8 +119,10 @@ function MoveDown(){
     }
 }
 
-function Rotate(){
-
+function RotateCurrentFigure(){
+    var f = figures[figures.length-1]
+    f.rotateIndex = (f.rotateIndex + 1)%4
+    f.blocks = f.blocksTemplates[f.rotateIndex]
 }
 
 // Main
@@ -131,9 +141,10 @@ document.addEventListener('keydown', function(event) {
         MoveRight()
     } else if(event.which == 37){
         MoveLeft()
-    } else MoveDown()
-    if(event.which == 40 ){
-        falltime /= 2
+    } else if (event.which == 38){
+        RotateCurrentFigure()
+    } else if(event.which == 40 ){
+        MoveDown()
     }
     DrawField()
 })
