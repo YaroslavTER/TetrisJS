@@ -1,28 +1,41 @@
 var canvas = document.getElementById('canvas_id')
 var ctx = canvas.getContext('2d')
 var side = 20, rows = 10, colums = 20, falltime = 500
-var figures = [], colors = ['#ff420e', '#6897bb', '#ff7373', '#008080', '#567e35', '#ffe33d']
-var combinations1=[[[1,0],[1,1],[1,2],[2,1]],
-                   [[0,1],[1,1],[1,0],[2,1]],
-                   [[0,1],[1,1],[1,0],[1,2]]]
-/*var figureTemplates = [
-    [[1,0],[1,1],[1,2],[2,1]],
-    [[0,0],[0,1],[0,2],[1,0]],
-    [[0,0],[1,0],[1,1],[1,2]],
-    [[0,0],[0,1],[0,2],[0,3]],
-    [[0,0],[0,1],[0,2],[1,1]],
-    [[0,0],[0,1],[1,0],[1,1]],
-    [[1,0],[1,1],[0,1],[0,2]]
-]*/
-var figureTemplates = [combinations1]
+var figures = [], colors = ['#ff420e', '#6897bb', '#ff7373', '#008080', '#567e35']
+
+var blocksTemplates = [
+    [
+        [[0,0],[0,1],[0,2],[1,0]],
+        [[-1,1],[0,1],[1,1],[1,2]],
+        [[1,1],[1,0],[1,-1],[0,1]],
+        [[0,0],[0,1],[1,1],[2,1]]
+    ],[
+        [[0,0],[1,0],[1,1],[1,2]],
+        [[0,1],[1,1],[2,1],[2,0]],
+        [[1,0],[1,1],[1,2],[2,2]],
+        [[0,1],[0,2],[1,1],[2,1]]
+    ],[
+        [[0,0],[0,1],[0,2],[0,3]],
+        [[-1,1],[0,1],[1,1],[2,1]]//думаю, етого хватит
+    ],[
+        [[0,0],[0,1],[0,2],[1,1]],
+        [[-1,1],[0,1],[1,1],[0,2]],
+        [[-1,1],[0,1],[0,0],[0,2]],
+        [[-1,1],[0,1],[0,0],[1,1]]
+    ],[
+        [[1,0],[1,1],[0,1],[0,2]],
+        [[-1,1],[0,1],[0,2],[1,2]]
+    ],[
+        [[0,0],[0,1],[1,0],[1,1]]
+    ]
+]
 
 function AddFigure(){
-    var f = { x: 0, y: 0}
+    var f = { x: 0, y: 0, rotateIndex: 0}
     f.color = GetRandomColor()
-    f.index = getRandInt(0,figureTemplates.length-1)
-    f.blocks = figureTemplates[f.index][0]
-    f.rotate_index = 0
-    f.x += rows/2-1
+    f.blocksTemplates = blocksTemplates[getRandInt(0,blocksTemplates.length-1)]
+    f.blocks = f.blocksTemplates[0]
+    f.x += rows/2
     f.y -= GetFigureDim(f).height+1
     figures.push(f)
 }
@@ -117,9 +130,10 @@ function MoveDown(){
     }
 }
 
-function Rotate(){
-    var f = figures[figures.length-1][f.index][f.rotate_index++]
-    figures[figures.length-1] = f 
+function RotateCurrentFigure(){
+    var f = figures[figures.length-1]
+    f.rotateIndex = (f.rotateIndex + 1)%f.blocksTemplates.length
+    f.blocks = f.blocksTemplates[f.rotateIndex]
 }
 
 // Main
@@ -138,11 +152,10 @@ document.addEventListener('keydown', function(event) {
         MoveRight()
     else if(event.which == 37)
         MoveLeft()
-    else if(event.which == 38)
-        Rotate()
-    else MoveDown()
-    if(event.which == 40 ){
-        falltime /= 2
+    else if (event.which == 38){
+        RotateCurrentFigure()
+    } else if(event.which == 40 ){
+        MoveDown()
     }
     DrawField()
 })
