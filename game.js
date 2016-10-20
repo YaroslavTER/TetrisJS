@@ -1,20 +1,27 @@
 var canvas = document.getElementById('canvas_id')
 var ctx = canvas.getContext('2d')
 var side = 20, rows = 10, colums = 20, falltime = 500
-var figures = [], colors = ['#ff420e', '#6897bb', '#ff7373', '#008080', '#567e35']
-
-var figureTemplates = [
+var figures = [], colors = ['#ff420e', '#6897bb', '#ff7373', '#008080', '#567e35', '#ffe33d']
+var combinations1=[[[1,0],[1,1],[1,2],[2,1]],
+                   [[0,1],[1,1],[1,0],[2,1]],
+                   [[0,1],[1,1],[1,0],[1,2]]]
+/*var figureTemplates = [
+    [[1,0],[1,1],[1,2],[2,1]],
     [[0,0],[0,1],[0,2],[1,0]],
     [[0,0],[1,0],[1,1],[1,2]],
     [[0,0],[0,1],[0,2],[0,3]],
     [[0,0],[0,1],[0,2],[1,1]],
-    [[0,0],[0,1],[1,0],[1,1]]
-]
+    [[0,0],[0,1],[1,0],[1,1]],
+    [[1,0],[1,1],[0,1],[0,2]]
+]*/
+var figureTemplates = [combinations1]
 
 function AddFigure(){
     var f = { x: 0, y: 0}
     f.color = GetRandomColor()
-    f.blocks = figureTemplates[getRandInt(0,figureTemplates.length-1)]
+    f.index = getRandInt(0,figureTemplates.length-1)
+    f.blocks = figureTemplates[f.index][0]
+    f.rotate_index = 0
     f.x += rows/2-1
     f.y -= GetFigureDim(f).height+1
     figures.push(f)
@@ -37,7 +44,7 @@ function CheckSides(f, value){
     for(var i = 0; i < f.blocks.length; i++){
         for(var k = 0; k < figures.length - 1; k++){
             var otherf = figures[k]
-            for(var l = 0; l < otherf.blocks.length; l ++){
+            for(var l = 0; l < otherf.blocks.length; l++){
                 if(f.blocks[i][0]+f.x+value == otherf.blocks[l][0]+otherf.x &&
                    f.blocks[i][1]+f.y == otherf.blocks[l][1]+otherf.y){
                     return false
@@ -49,7 +56,6 @@ function CheckSides(f, value){
 }
 
 function TestForCollision(f,direction){
-    //var f = figures[figures.length-1]
     var dim = GetFigureDim(f)
     if(direction == 'left' && f.x-1 >= 0){
         return CheckSides(f, -1)
@@ -112,7 +118,8 @@ function MoveDown(){
 }
 
 function Rotate(){
-
+    var f = figures[figures.length-1][f.index][f.rotate_index++]
+    figures[figures.length-1] = f 
 }
 
 // Main
@@ -127,11 +134,13 @@ setInterval(function(){
 // Listeners
 document.addEventListener('keydown', function(event) {
     var keycode = (event.keyCode ? event.keyCode : event.which)
-    if(event.which == 39){
+    if(event.which == 39)
         MoveRight()
-    } else if(event.which == 37){
+    else if(event.which == 37)
         MoveLeft()
-    } else MoveDown()
+    else if(event.which == 38)
+        Rotate()
+    else MoveDown()
     if(event.which == 40 ){
         falltime /= 2
     }
