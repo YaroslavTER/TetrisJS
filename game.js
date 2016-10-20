@@ -19,7 +19,7 @@ var blocksTemplates = [
 function AddFigure(){
     var f = { x: 0, y: 0, rotateIndex: 0}
     f.color = GetRandomColor()
-
+    
     //f.blocks = blocksTemplates[getRandInt(0,blocksTemplates.length-1)]
     f.blocksTemplates = blocksTemplates[0]
     f.blocks = f.blocksTemplates[0]
