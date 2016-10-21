@@ -53,13 +53,28 @@ function GetFigureDim(figure){//немного изменил
     return {width: width, height: height}
 }
 
-function CheckSides(f, value){
+function CheckSides(f, additionValue){
     for(var i = 0; i < f.blocks.length; i++){
         for(var k = 0; k < figures.length - 1; k++){
             var otherf = figures[k]
             for(var l = 0; l < otherf.blocks.length; l++){
-                if(f.blocks[i][0]+f.x+value == otherf.blocks[l][0]+otherf.x &&
+                if(f.blocks[i][0]+f.x+additionValue == otherf.blocks[l][0]+otherf.x &&
                    f.blocks[i][1]+f.y == otherf.blocks[l][1]+otherf.y){
+                    return false
+                }
+            }
+        }
+    }
+    return true
+}
+
+function CheckDown(f, additionValue){
+    for(var i = 0; i < f.blocks.length; i++){
+        for(var k = 0; k < figures.length - 1; k++){
+            var otherf = figures[k]
+            for(var l = 0; l < otherf.blocks.length; l ++){
+                if(f.blocks[i][1]+f.y+additionValue == otherf.blocks[l][1]+otherf.y &&
+                   f.blocks[i][0]+f.x == otherf.blocks[l][0]+otherf.x){
                     return false
                 }
             }
@@ -70,24 +85,12 @@ function CheckSides(f, value){
 
 function TestForCollision(f,direction){
     var dim = GetFigureDim(f)
-    if(direction == 'left' && f.x-1 >= 0){
+    if(direction == 'left' && f.x-1 >= 0)
         return CheckSides(f, -1)
-    }else if(direction == 'right' && f.x+1 < rows-dim.width){
+    else if(direction == 'right' && f.x+1 < rows-dim.width)
         return CheckSides(f, 1)
-    }else if (direction == 'down' && f.y + dim.height +1 < colums){
-        for(var i = 0; i < f.blocks.length; i++){
-            for(var k = 0; k < figures.length - 1; k++){
-                var otherf = figures[k]
-                for(var l = 0; l < otherf.blocks.length; l ++){
-                    if(f.blocks[i][1]+f.y+1 == otherf.blocks[l][1]+otherf.y &&
-                       f.blocks[i][0]+f.x == otherf.blocks[l][0]+otherf.x){
-                        return false
-                    }
-                }
-            }
-        }
-        return true
-    }
+    else if (direction == 'down' && f.y + dim.height +1 < colums)
+        return CheckDown(f,1)
     return false
 
 }
@@ -131,9 +134,15 @@ function MoveDown(){
 }
 
 function RotateCurrentFigure(){
-    var f = figures[figures.length-1]
-    f.rotateIndex = (f.rotateIndex + 1)%f.blocksTemplates.length
-    f.blocks = f.blocksTemplates[f.rotateIndex]
+    var length = figures.length-1
+    var nextFigure = {x: figures[length].x, y: figures[length].y,
+                   blocks: figures[length].blocksTemplates[(figures[length].rotateIndex+1)%figures[length].blocksTemplates.length],
+                   color: figures[length].color}
+    if(CheckSides(nextFigure,0) && CheckDown(nextFigure,0)){
+        var f = figures[figures.length-1]
+        f.rotateIndex = (f.rotateIndex + 1)%f.blocksTemplates.length
+        f.blocks = f.blocksTemplates[f.rotateIndex]
+    }
 }
 
 // Main
