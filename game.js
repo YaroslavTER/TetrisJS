@@ -2,6 +2,8 @@ var canvas = document.getElementById('canvas_id')
 var ctx = canvas.getContext('2d')
 var side = 20, rows = 10, colums = 20, falltime = 500
 var figures = [], colors = ['#ff420e', '#6897bb', '#ff7373', '#008080', '#567e35']
+var mainGameCycle
+var gameStatus = 'stop'
 
 var blocksTemplates = [
     [
@@ -35,46 +37,30 @@ function AddFigure(){
     f.color = GetRandomColor()
     f.blocksTemplates = blocksTemplates[getRandInt(0,blocksTemplates.length-1)]
     f.blocks = f.blocksTemplates[0]
-    f.x += rows/2
-    f.y -= GetFigureDim(f).height+1
-    figures.push(f)
-}
-
-function GetFigureDim(figure){//немного изменил
-    var height = 0, width = 0
-    for(var i = 0; i < figure.blocks.length; i++){
-        if(figure.blocks[i][0] > width){
-            width = figure.blocks[i][0]
-        }
-        if(figure.blocks[i][1] > height){
-            height = figure.blocks[i][1]
-        }
+    f.x = rows/2 - 1
+    f.y = 0
+    if(CheckCollision(f, 0, 0)){
+        console.log('new figure added')
+        figures.push(f)
+    }else{
+        console.log('game over')
+        GameOver()
     }
-    return {width: width, height: height}
 }
 
-function CheckSides(f, additionValue){
+function CheckCollision(f, x, y){
     for(var i = 0; i < f.blocks.length; i++){
+        if(f.blocks[i][0]+f.x+x < 0 || f.blocks[i][0]+f.x+x >= rows){
+            return false
+        }
+        if(f.blocks[i][1]+f.y+y >= colums){
+            return false
+        }
         for(var k = 0; k < figures.length - 1; k++){
             var otherf = figures[k]
             for(var l = 0; l < otherf.blocks.length; l++){
-                if(f.blocks[i][0]+f.x+additionValue == otherf.blocks[l][0]+otherf.x &&
-                   f.blocks[i][1]+f.y == otherf.blocks[l][1]+otherf.y){
-                    return false
-                }
-            }
-        }
-    }
-    return true
-}
-
-function CheckDown(f, additionValue){
-    for(var i = 0; i < f.blocks.length; i++){
-        for(var k = 0; k < figures.length - 1; k++){
-            var otherf = figures[k]
-            for(var l = 0; l < otherf.blocks.length; l ++){
-                if(f.blocks[i][1]+f.y+additionValue == otherf.blocks[l][1]+otherf.y &&
-                   f.blocks[i][0]+f.x == otherf.blocks[l][0]+otherf.x){
+                if(f.blocks[i][0]+f.x+x == otherf.blocks[l][0]+otherf.x &&
+                   f.blocks[i][1]+f.y+y == otherf.blocks[l][1]+otherf.y){
                     return false
                 }
             }
@@ -84,15 +70,13 @@ function CheckDown(f, additionValue){
 }
 
 function TestForCollision(f,direction){
-    var dim = GetFigureDim(f)
-    if(direction == 'left' && f.x-1 >= 0)
-        return CheckSides(f, -1)
-    else if(direction == 'right' && f.x+1 < rows-dim.width)
-        return CheckSides(f, 1)
-    else if (direction == 'down' && f.y + dim.height +1 < colums)
-        return CheckDown(f,1)
+    if(direction == 'left')
+        return CheckCollision(f, -1, 0)
+    else if(direction == 'right')
+        return CheckCollision(f, 1, 0)
+    else if (direction == 'down')
+        return CheckCollision(f, 0, 1)
     return false
-
 }
 
 function GetRandomColor(){
@@ -133,29 +117,43 @@ function MoveDown(){
     }
 }
 
+function GameOver(){
+    clearInterval(mainGameCycle)
+    gameStatus = 'stop'
+    alert('you lost!!!!!!!111')
+}
+
+function NewGame(){
+    figures = []
+    AddFigure()
+    DrawField()
+
+    mainGameCycle = setInterval(function(){
+        MoveDown()
+        DrawField()
+    },falltime)
+    gameStatus = 'run'
+}
+
 function RotateCurrentFigure(){
     var length = figures.length-1
     var nextFigure = {x: figures[length].x, y: figures[length].y,
                    blocks: figures[length].blocksTemplates[(figures[length].rotateIndex+1)%figures[length].blocksTemplates.length],
                    color: figures[length].color}
-    if(CheckSides(nextFigure,0) && CheckDown(nextFigure,0)){
+    if(CheckCollision(nextFigure,0,0)){
         var f = figures[figures.length-1]
         f.rotateIndex = (f.rotateIndex + 1)%f.blocksTemplates.length
         f.blocks = f.blocksTemplates[f.rotateIndex]
     }
 }
 
-// Main
-AddFigure()
-DrawField()
-
-setInterval(function(){
-    MoveDown()
-    DrawField()
-},falltime)
-
 // Listeners
 document.addEventListener('keydown', function(event) {
+    if(gameStatus == 'stop'){
+        NewGame()
+        return
+    }
+
     var keycode = (event.keyCode ? event.keyCode : event.which)
     if(event.which == 39)
         MoveRight()
