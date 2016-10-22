@@ -40,7 +40,7 @@ function AddFigure(){
     figures.push(f)
 }
 
-function GetFigureDim(figure){//немного изменил
+function GetFigureDim(figure){
     var height = 0, width = 0
     for(var i = 0; i < figure.blocks.length; i++){
         if(figure.blocks[i][0] > width){
@@ -135,9 +135,9 @@ function MoveDown(){
 
 function RotateCurrentFigure(){
     var length = figures.length-1
-    var nextFigure = {x: figures[length].x, y: figures[length].y,
-                   blocks: figures[length].blocksTemplates[(figures[length].rotateIndex+1)%figures[length].blocksTemplates.length],
-                   color: figures[length].color}
+    var nextFigure = { x: figures[length].x, y: figures[length].y,
+                       blocks: figures[length].blocksTemplates[(figures[length].rotateIndex+1)%figures[length].blocksTemplates.length],
+                       color: figures[length].color }
     if(CheckSides(nextFigure,0) && CheckDown(nextFigure,0)){
         var f = figures[figures.length-1]
         f.rotateIndex = (f.rotateIndex + 1)%f.blocksTemplates.length
@@ -161,11 +161,10 @@ document.addEventListener('keydown', function(event) {
         MoveRight()
     else if(event.which == 37)
         MoveLeft()
-    else if (event.which == 38){
+    else if (event.which == 38)
         RotateCurrentFigure()
-    } else if(event.which == 40 ){
+    else if(event.which == 40 )
         MoveDown()
-    }
     DrawField()
 })
 
