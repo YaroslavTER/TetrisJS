@@ -37,42 +37,31 @@ function AddFigure(){
     f.color = GetRandomColor()
     f.blocksTemplates = blocksTemplates[getRandInt(0,blocksTemplates.length-1)]
     f.blocks = f.blocksTemplates[0]
-<<<<<<< HEAD
-    f.x += rows/2
-    f.y -= GetFigureDim(f).height+1
-    figures.push(f)
-}
-
-function GetFigureDim(figure){
-    var height = 0, width = 0
-    for(var i = 0; i < figure.blocks.length; i++){
-        if(figure.blocks[i][0] > width){
-            width = figure.blocks[i][0]
-        }
-        if(figure.blocks[i][1] > height){
-            height = figure.blocks[i][1]
-        }
-=======
-    f.x = rows/2 - 1
-    f.y = 0
+    f.x = rows/2-1
+    f.y -= GetFigureHeight(f)+1
     if(CheckCollision(f, 0, 0)){
         console.log('new figure added')
         figures.push(f)
     }else{
         console.log('game over')
         GameOver()
->>>>>>> bc752c41e92ad9d2302cf82d1f433b305fbbc76f
     }
+}
+
+function GetFigureHeight(figure){
+    var height = 0
+    for(var i = 0; i < figure.blocks.length; i++)
+        if(figure.blocks[i][1] > height)
+            height = figure.blocks[i][1]
+    return height
 }
 
 function CheckCollision(f, x, y){
     for(var i = 0; i < f.blocks.length; i++){
-        if(f.blocks[i][0]+f.x+x < 0 || f.blocks[i][0]+f.x+x >= rows){
+        if(f.blocks[i][0]+f.x+x < 0 || f.blocks[i][0]+f.x+x >= rows)
             return false
-        }
-        if(f.blocks[i][1]+f.y+y >= colums){
+        if(f.blocks[i][1]+f.y+y >= colums)
             return false
-        }
         for(var k = 0; k < figures.length - 1; k++){
             var otherf = figures[k]
             for(var l = 0; l < otherf.blocks.length; l++){
@@ -127,11 +116,9 @@ function MoveRight(){
 
 function MoveDown(){
     var f = figures[figures.length-1]
-    if(TestForCollision(f,'down')){
+    if(TestForCollision(f,'down'))
         f.y++
-    }else {
-        AddFigure()
-    }
+    else AddFigure()
 }
 
 function GameOver(){
@@ -144,7 +131,6 @@ function NewGame(){
     figures = []
     AddFigure()
     DrawField()
-
     mainGameCycle = setInterval(function(){
         MoveDown()
         DrawField()
@@ -154,17 +140,10 @@ function NewGame(){
 
 function RotateCurrentFigure(){
     var length = figures.length-1
-<<<<<<< HEAD
     var nextFigure = { x: figures[length].x, y: figures[length].y,
                        blocks: figures[length].blocksTemplates[(figures[length].rotateIndex+1)%figures[length].blocksTemplates.length],
                        color: figures[length].color }
-    if(CheckSides(nextFigure,0) && CheckDown(nextFigure,0)){
-=======
-    var nextFigure = {x: figures[length].x, y: figures[length].y,
-                   blocks: figures[length].blocksTemplates[(figures[length].rotateIndex+1)%figures[length].blocksTemplates.length],
-                   color: figures[length].color}
     if(CheckCollision(nextFigure,0,0)){
->>>>>>> bc752c41e92ad9d2302cf82d1f433b305fbbc76f
         var f = figures[figures.length-1]
         f.rotateIndex = (f.rotateIndex + 1)%f.blocksTemplates.length
         f.blocks = f.blocksTemplates[f.rotateIndex]
