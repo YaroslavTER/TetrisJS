@@ -2,9 +2,9 @@ var canvas = document.getElementById('canvas_id')
 var ctx = canvas.getContext('2d')
 var side = 20, rows = 10, colums = 20, falltime = 500
 var figures = []
-var colors = ['#ff420e', '#6897bb', '#ff7373', '#008080', '#567e35','#f44336',
-    '#E91E63','#9C27B0','#673AB7','#3F51B5','#2196F3','#03A9F4','#8BC34A','#009688',
-    '#FFEB3B','#FFC107','#FF9800','#795548','#607D8B','#9E9E9E']
+var colors = ['#FF420E', '#6897BB', '#FF7373', '#008080', '#567E35','#F44336',
+              '#E91E63','#9C27B0','#673AB7','#3F51B5','#2196F3','#03A9F4','#8BC34A','#009688',
+              '#FFEB3B','#FFC107','#FF9800','#795548','#607D8B','#9E9E9E']
 var mainGameCycle
 var gameStatus = 'stop'
 var score = {
@@ -114,11 +114,8 @@ function GetRandomColor(){
 function MoveEverythingAbove(row){
     for(var j = 0; j < figures.length; j++){
         var f = figures[j]
-        for(var k = 0; k < f.blocks.length; k++){
-            if((f.y + f.blocks[k][1])<row){
-                f.y++
-            }
-        }
+        if(f.y < row)
+            f.y++
     }
 }
 
@@ -196,7 +193,7 @@ function MoveDown(){
     var f = figures[figures.length-1]
     if(TestForCollision(f,'down')){
         f.y++
-    }else{ 
+    }else{
         AddFigure()
         CheckForFullLine()
     }
