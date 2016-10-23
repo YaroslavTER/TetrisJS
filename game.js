@@ -13,6 +13,10 @@ var score = {
     updateScore: function(){
         var s = document.getElementById('s')
         s.innerHTML = 'Score: '+this._score
+    },
+    reset: function(){
+        this._score = 0
+        this.updateScore()
     }
 }
 
@@ -188,6 +192,7 @@ function GameOver(){
 }
 
 function NewGame(){
+    score.reset()
     figures = []
     AddFigure()
     DrawField()
