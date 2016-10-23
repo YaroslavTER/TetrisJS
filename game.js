@@ -1,7 +1,10 @@
 var canvas = document.getElementById('canvas_id')
 var ctx = canvas.getContext('2d')
 var side = 20, rows = 10, colums = 20, falltime = 500
-var figures = [], colors = ['#ff420e', '#6897bb', '#ff7373', '#008080', '#567e35']
+var figures = []
+var colors = ['#ff420e', '#6897bb', '#ff7373', '#008080', '#567e35','#f44336',
+    '#E91E63','#9C27B0','#673AB7','#3F51B5','#2196F3','#03A9F4','#8BC34A','#009688',
+    '#FFEB3B','#FFC107','#FF9800','#795548','#607D8B','#9E9E9E']
 var mainGameCycle
 var gameStatus = 'stop'
 var score = {
@@ -140,12 +143,18 @@ function CheckForFullLine(){
     for(var i = 0; i < colums; i++){
         width = 0
         for(var j = 0; j < figures.length; j++){
+            if(j==0)
+                width = 0
             var f = figures[j]
             for(var k = 0; k < f.blocks.length; k++){
                 if((f.y + f.blocks[k][1])==i){
                     width++
                 }
             }
+        }
+        if(width > rows){
+            console.log('Что-то пошло не так')
+            debugger
         }
         if(width == rows){
             console.log('Опа, ряд номер '+i+' заполнен, удаляю')
@@ -155,12 +164,19 @@ function CheckForFullLine(){
 }
 
 function DrawField(){
+    var st = 4
     ctx.clearRect(0,0,(rows+1)*side,(colums+1)*side)
     for(var i = 0; i < figures.length; i++ ){
         var f = figures[i]
-        ctx.fillStyle = f.color
         for(var j = 0; j < f.blocks.length; j++){
+            ctx.fillStyle = f.color
             ctx.fillRect((f.blocks[j][0]+f.x)*side, (f.blocks[j][1]+f.y)*side, side, side)
+            ctx.fillStyle = "rgba(255,255,255,0.3)"
+            ctx.fillRect((f.blocks[j][0]+f.x)*side+st, (f.blocks[j][1]+f.y)*side, side-st, st)
+            ctx.fillRect((f.blocks[j][0]+f.x)*side, (f.blocks[j][1]+f.y)*side, st, side)
+            ctx.fillStyle = "rgba(0,0,0,0.15)"
+            ctx.fillRect((f.blocks[j][0]+f.x)*side, (f.blocks[j][1]+f.y)*side+side-st, side-st, st)
+            ctx.fillRect((f.blocks[j][0]+f.x)*side+side-st, (f.blocks[j][1]+f.y)*side, st, side)
         }
     }
 }
