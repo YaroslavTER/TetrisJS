@@ -4,6 +4,17 @@ var side = 20, rows = 10, colums = 20, falltime = 500
 var figures = [], colors = ['#ff420e', '#6897bb', '#ff7373', '#008080', '#567e35']
 var mainGameCycle
 var gameStatus = 'stop'
+var score = {
+    _score: 0,
+    add: function(n){
+        this._score += n
+        this.updateScore()
+    },
+    updateScore: function(){
+        var s = document.getElementById('s')
+        s.innerHTML = 'Score: '+this._score
+    }
+}
 
 var blocksTemplates = [
     [
@@ -35,12 +46,13 @@ var blocksTemplates = [
 function AddFigure(){
     var f = { x: 0, y: 0, rotateIndex: 0}
     f.color = GetRandomColor()
-    f.blocksTemplates = blocksTemplates[getRandInt(0,blocksTemplates.length-1)]
-    f.blocks = f.blocksTemplates[0]
+    f.blocksTemplates = blocksTemplates[getRandInt(0,blocksTemplates.length-1)].slice(0)
+    f.blocks = f.blocksTemplates[0].slice(0)
     f.x = rows/2-1
     f.y -= GetFigureHeight(f)+1
     if(CheckCollision(f, 0, 0)){
         console.log('new figure added')
+        score.add(2)
         figures.push(f)
     }else{
         console.log('game over')
@@ -92,6 +104,52 @@ function GetRandomColor(){
     return new_color
 }
 
+function MoveEverythingAbove(row){
+    for(var j = 0; j < figures.length; j++){
+        var f = figures[j]
+        for(var k = 0; k < f.blocks.length; k++){
+            if((f.y + f.blocks[k][1])<row){
+                f.y++
+            }
+        }
+    }
+}
+
+function DeleteRow(row){
+    for(var j = 0; j < figures.length; j++){
+        var f = figures[j]
+        for(var k = 0; k < f.blocks.length; k++){
+            if((f.y + f.blocks[k][1])==row){
+                f.blocks.splice(k,1)
+                k--
+            }
+        }
+    }
+    setTimeout(function(){
+        MoveEverythingAbove(row)
+        score.add(20)
+    },100)
+}
+
+function CheckForFullLine(){
+    var width
+    for(var i = 0; i < colums; i++){
+        width = 0
+        for(var j = 0; j < figures.length; j++){
+            var f = figures[j]
+            for(var k = 0; k < f.blocks.length; k++){
+                if((f.y + f.blocks[k][1])==i){
+                    width++
+                }
+            }
+        }
+        if(width == rows){
+            console.log('Опа, ряд номер '+i+' заполнен, удаляю')
+            DeleteRow(i)
+        }
+    }
+}
+
 function DrawField(){
     ctx.clearRect(0,0,(rows+1)*side,(colums+1)*side)
     for(var i = 0; i < figures.length; i++ ){
@@ -116,15 +174,17 @@ function MoveRight(){
 
 function MoveDown(){
     var f = figures[figures.length-1]
-    if(TestForCollision(f,'down'))
+    if(TestForCollision(f,'down')){
         f.y++
-    else AddFigure()
+    }else{ 
+        AddFigure()
+        CheckForFullLine()
+    }
 }
 
 function GameOver(){
     clearInterval(mainGameCycle)
     gameStatus = 'stop'
-    alert('you lost!!!!!!!111')
 }
 
 function NewGame(){
@@ -146,7 +206,7 @@ function RotateCurrentFigure(){
     if(CheckCollision(nextFigure,0,0)){
         var f = figures[figures.length-1]
         f.rotateIndex = (f.rotateIndex + 1)%f.blocksTemplates.length
-        f.blocks = f.blocksTemplates[f.rotateIndex]
+        f.blocks = f.blocksTemplates[f.rotateIndex].slice(0)
     }
 }
 
