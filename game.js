@@ -114,8 +114,11 @@ function GetRandomColor(){
 function MoveEverythingAbove(row){
     for(var j = 0; j < figures.length; j++){
         var f = figures[j]
-        if(f.y < row)
-            f.y++
+        for(var k = 0; k < f.blocks.length; k++){
+            if((f.y + f.blocks[k][1])<row){
+
+            }
+        }
     }
 }
 
@@ -229,6 +232,7 @@ function RotateCurrentFigure(){
 }
 
 // Listeners
+alert('Press any key to start')
 document.addEventListener('keydown', function(event) {
     if(gameStatus == 'stop'){
         NewGame()
