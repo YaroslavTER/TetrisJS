@@ -116,7 +116,7 @@ function MoveEverythingAbove(row){
         var f = figures[j]
         for(var k = 0; k < f.blocks.length; k++){
             if((f.y + f.blocks[k][1])<row){
-
+                f.blocks[k][1]++
             }
         }
     }
