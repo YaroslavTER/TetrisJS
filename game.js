@@ -1,6 +1,6 @@
 var canvas = document.getElementById('canvas_id')
 var ctx = canvas.getContext('2d')
-var side = 20, rows = 10, colums = 20, falltime = 500
+var side = 20, rows = 10, colums = 20, falltime = 500, points = 2
 var figures = []
 var colors = ['#FF420E', '#6897BB', '#FF7373', '#008080', '#567E35','#F44336',
               '#E91E63','#9C27B0','#673AB7','#3F51B5','#2196F3','#03A9F4','#8BC34A','#009688',
@@ -23,7 +23,7 @@ var score = {
     }
 }
 
-var blocksTemplates = [
+const blocksTemplates = [
     [
         [[0,0],[0,1],[0,2],[1,0]],
         [[-1,1],[0,1],[1,1],[1,2]],
@@ -53,13 +53,13 @@ var blocksTemplates = [
 function AddFigure(){
     var f = { x: 0, y: 0, rotateIndex: 0}
     f.color = GetRandomColor()
-    f.blocksTemplates = blocksTemplates[getRandInt(0,blocksTemplates.length-1)].slice(0)
-    f.blocks = f.blocksTemplates[0].slice(0)
+    f.blocksTemplates = blocksTemplates[getRandInt(0,blocksTemplates.length-1)].slice()
+    f.blocks = f.blocksTemplates[0].slice()
     f.x = rows/2-1
     f.y -= GetFigureHeight(f)+1
     if(CheckCollision(f, 0, 0)){
         console.log('new figure added')
-        score.add(2)
+        score.add(points)
         figures.push(f)
     }else{
         console.log('game over')
@@ -112,17 +112,14 @@ function GetRandomColor(){
 }
 
 function MoveEverythingAbove(row){
-    var figuresFromList = figures
-    var rememberBlockTemlates = figuresFromList.blocksTemplates
     for(var j = 0; j < figures.length; j++){
-        var f = figuresFromList[j]
+        var f = figures[j]
         for(var k = 0; k < f.blocks.length; k++){
             if((f.y + f.blocks[k][1])<row){
-                f.blocks[k][1]++
+                f.blocks[k] = [f.blocks[k][0],f.blocks[k][1]+1]
             }
         }
     }
-    figures.blocksTemplates = rememberBlockTemlates
 }
 
 function DeleteRow(row){
@@ -135,35 +132,27 @@ function DeleteRow(row){
             }
         }
     }
-    setTimeout(function(){
-        MoveEverythingAbove(row)
-        score.add(20)
-    },100)
+    MoveEverythingAbove(row)
+    score.add(points*10)
+}
+
+function SetBy(width, value){
+    for(var i = 0; i < width.length; i++)
+        width[i] = value
 }
 
 function CheckForFullLine(){
-    var width
-    for(var i = 0; i < colums; i++){
-        width = 0
-        for(var j = 0; j < figures.length; j++){
-            if(j==0)
-                width = 0
-            var f = figures[j]
-            for(var k = 0; k < f.blocks.length; k++){
-                if((f.y + f.blocks[k][1])==i){
-                    width++
-                }
-            }
-        }
-        if(width > rows){
-            console.log('Что-то пошло не так')
-            debugger
-        }
-        if(width == rows){
-            console.log('Опа, ряд номер '+i+' заполнен, удаляю')
-            DeleteRow(i)
+    var width = new Array(colums)
+    SetBy(width, 0)
+    var blocks = getAllBlocks()
+    for(var i = 0; i < blocks.length; i++){
+        width[blocks[i][1]] += 1
+        if(width[blocks[i][1]]==10){
+            console.log('Deleting row',blocks[i][1])
+            DeleteRow(blocks[i][1])
         }
     }
+    console.log(width)
 }
 
 function DrawField(){
@@ -183,15 +172,12 @@ function DrawField(){
         }
     }
 }
-function MoveLeft(){
-    var f = figures[figures.length-1]
-    if(TestForCollision(f,'left'))
-        f.x--
-}
 
-function MoveRight(){
+function MovementTowards(direction){
     var f = figures[figures.length-1]
-    if(TestForCollision(f,'right'))
+    if(TestForCollision(f, direction) && direction == 'left')
+        f.x--
+    else if(TestForCollision(f, direction) && direction == 'right')
         f.x++
 }
 
@@ -200,8 +186,8 @@ function MoveDown(){
     if(TestForCollision(f,'down')){
         f.y++
     }else{
-        AddFigure()
         CheckForFullLine()
+        AddFigure()
     }
 }
 
@@ -230,12 +216,23 @@ function RotateCurrentFigure(){
     if(CheckCollision(nextFigure,0,0)){
         var f = figures[figures.length-1]
         f.rotateIndex = (f.rotateIndex + 1)%f.blocksTemplates.length
-        f.blocks = f.blocksTemplates[f.rotateIndex].slice(0)
+        f.blocks = f.blocksTemplates[f.rotateIndex].slice()
     }
 }
 
+// get all blocks
+function getAllBlocks(){
+    let arr = []
+    for(var i = 0; i < figures.length; i++){
+        var f = figures[i]
+        for(var j = 0; j < f.blocks.length; j++){
+            arr.push([f.blocks[j][0]+f.x, f.blocks[j][1]+f.y])
+        }
+    }
+    return arr
+}
+
 // Listeners
-alert('Press any key to start')
 document.addEventListener('keydown', function(event) {
     if(gameStatus == 'stop'){
         NewGame()
@@ -244,9 +241,9 @@ document.addEventListener('keydown', function(event) {
 
     var keycode = (event.keyCode ? event.keyCode : event.which)
     if(event.which == 39)
-        MoveRight()
+        MovementTowards('right')
     else if(event.which == 37)
-        MoveLeft()
+        MovementTowards('left')
     else if (event.which == 38)
         RotateCurrentFigure()
     else if(event.which == 40 )
