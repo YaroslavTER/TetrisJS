@@ -23,7 +23,7 @@ var score = {
     }
 }
 
-var blocksTemplates = [
+const blocksTemplates = [
     [
         [[0,0],[0,1],[0,2],[1,0]],
         [[-1,1],[0,1],[1,1],[1,2]],
@@ -53,8 +53,8 @@ var blocksTemplates = [
 function AddFigure(){
     var f = { x: 0, y: 0, rotateIndex: 0}
     f.color = GetRandomColor()
-    f.blocksTemplates = blocksTemplates[getRandInt(0,blocksTemplates.length-1)].slice(0)
-    f.blocks = f.blocksTemplates[0].slice(0)
+    f.blocksTemplates = blocksTemplates[getRandInt(0,blocksTemplates.length-1)].slice()
+    f.blocks = f.blocksTemplates[0].slice()
     f.x = rows/2-1
     f.y -= GetFigureHeight(f)+1
     if(CheckCollision(f, 0, 0)){
@@ -112,14 +112,7 @@ function GetRandomColor(){
 }
 
 function MoveEverythingAbove(row){
-    for(var j = 0; j < figures.length; j++){
-        var f = figures[j]
-        for(var k = 0; k < f.blocks.length; k++){
-            if((f.y + f.blocks[k][1])<row){
-                f.blocks[k][1]++
-            }
-        }
-    }
+    // TODO
 }
 
 function DeleteRow(row){
@@ -132,35 +125,21 @@ function DeleteRow(row){
             }
         }
     }
-    setTimeout(function(){
-        MoveEverythingAbove(row)
-        score.add(20)
-    },100)
+    MoveEverythingAbove(row)
+    score.add(20)
 }
 
 function CheckForFullLine(){
-    var width
-    for(var i = 0; i < colums; i++){
-        width = 0
-        for(var j = 0; j < figures.length; j++){
-            if(j==0)
-                width = 0
-            var f = figures[j]
-            for(var k = 0; k < f.blocks.length; k++){
-                if((f.y + f.blocks[k][1])==i){
-                    width++
-                }
-            }
-        }
-        if(width > rows){
-            console.log('Что-то пошло не так')
-            debugger
-        }
-        if(width == rows){
-            console.log('Опа, ряд номер '+i+' заполнен, удаляю')
-            DeleteRow(i)
+    var width = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    var blocks = getAllBlocks()
+    for(var i = 0; i < blocks.length; i++){
+        width[blocks[i][1]] += 1
+        if(width[blocks[i][1]]==10){
+            console.log('Deleting row',blocks[i][1])
+            DeleteRow(blocks[i][1])
         }
     }
+    console.log(width)
 }
 
 function DrawField(){
@@ -197,8 +176,8 @@ function MoveDown(){
     if(TestForCollision(f,'down')){
         f.y++
     }else{
-        AddFigure()
         CheckForFullLine()
+        AddFigure()
     }
 }
 
@@ -227,12 +206,23 @@ function RotateCurrentFigure(){
     if(CheckCollision(nextFigure,0,0)){
         var f = figures[figures.length-1]
         f.rotateIndex = (f.rotateIndex + 1)%f.blocksTemplates.length
-        f.blocks = f.blocksTemplates[f.rotateIndex].slice(0)
+        f.blocks = f.blocksTemplates[f.rotateIndex].slice()
     }
 }
 
+// get all blocks
+function getAllBlocks(){
+    let arr = []
+    for(var i = 0; i < figures.length; i++){
+        var f = figures[i]
+        for(var j = 0; j < f.blocks.length; j++){
+            arr.push([f.blocks[j][0]+f.x, f.blocks[j][1]+f.y])
+        }
+    }
+    return arr
+}
+
 // Listeners
-alert('Press any key to start')
 document.addEventListener('keydown', function(event) {
     if(gameStatus == 'stop'){
         NewGame()
