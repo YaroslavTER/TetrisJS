@@ -112,14 +112,17 @@ function GetRandomColor(){
 }
 
 function MoveEverythingAbove(row){
+    var figuresFromList = figures
+    var rememberBlockTemlates = figuresFromList.blocksTemplates
     for(var j = 0; j < figures.length; j++){
-        var f = figures[j]
+        var f = figuresFromList[j]
         for(var k = 0; k < f.blocks.length; k++){
             if((f.y + f.blocks[k][1])<row){
                 f.blocks[k][1]++
             }
         }
     }
+    figures.blocksTemplates = rememberBlockTemlates
 }
 
 function DeleteRow(row){
