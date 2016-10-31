@@ -112,7 +112,14 @@ function GetRandomColor(){
 }
 
 function MoveEverythingAbove(row){
-    // TODO
+    for(var j = 0; j < figures.length; j++){ 
+        var f = figures[j] 
+        for(var k = 0; k < f.blocks.length; k++){ 
+            if((f.y + f.blocks[k][1])<row){ 
+                f.blocks[k] = [f.blocks[k][0],f.blocks[k][1]+1]
+            } 
+        } 
+    } 
 }
 
 function DeleteRow(row){
