@@ -133,7 +133,7 @@ function DeleteRow(row){
         }
     }
     MoveEverythingAbove(row)
-    score.add(points*10)
+    score.add(points*rows)
 }
 
 function SetBy(width, value){
@@ -211,7 +211,9 @@ function NewGame(){
 function RotateCurrentFigure(){
     var length = figures.length-1
     var nextFigure = { x: figures[length].x, y: figures[length].y,
-                       blocks: figures[length].blocksTemplates[(figures[length].rotateIndex+1)%figures[length].blocksTemplates.length],
+                       blocks: figures[length].blocksTemplates[(figures[length]
+                                              .rotateIndex+1)%figures[length]
+                                              .blocksTemplates.length],
                        color: figures[length].color }
     if(CheckCollision(nextFigure,0,0)){
         var f = figures[figures.length-1]
