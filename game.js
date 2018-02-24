@@ -30,6 +30,7 @@ var colors = [
 ];
 var mainGameCycle;
 var gameStatus = "stop";
+
 var score = {
   _score: 0,
   add: function(n) {
